@@ -1,3 +1,12 @@
+# Securely Use Secrets In Your AWS CDK Deployed Lambda Function
+
+This stack deploys a lambda function with secure access to a secret stored in `AWS Secrets Manager`
+
+Use the AWS CLI to create the secret:
+`aws secretsmanager create-secret --name secretsExample --secret-string "TestPass123"`
+
+Deploy the CDK stack:
+`cdk deploy`
 
 # Welcome to your CDK Python project!
 

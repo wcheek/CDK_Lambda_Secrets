@@ -29,7 +29,7 @@ class CdkLambdaSecretsStack(Stack):
                 "secret_region": os.environ["CDK_DEFAULT_REGION"],
             },
         )
-        # Grant permission to the Lambda func access the secret
+        # Grant permission to the Lambda func to access the secret
         example_secret = secrets.Secret.from_secret_name_v2(
             scope=self, id="secretExample", secret_name=secret_name
         )
