@@ -1,7 +1,8 @@
 import base64
+import json
+import os
 
 import boto3
-import json
 from botocore.exceptions import ClientError
 
 
@@ -9,8 +10,8 @@ def get_secret():
     """
     Gets the secret to access the database.
     """
-    secret_name = "arn:aws:secretsmanager:ap-northeast-1:089189684786:secret:dryer-database-secret-LcAuoe"
-    region_name = "ap-northeast-1"
+    secret_arn = os.getenv("secret_arn")
+    region_name = os.getenv("secret_region")
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
@@ -23,9 +24,7 @@ def get_secret():
     # We rethrow the exception by default.
 
     try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
+        get_secret_value_response = client.get_secret_value(SecretId=secret_arn)
     except ClientError as e:
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -61,6 +60,8 @@ def get_secret():
             )
             return json.loads(decoded_binary_secret)
 
+
 def handler(event, context):
     secret = get_secret()
+    print(secret)
     return True
