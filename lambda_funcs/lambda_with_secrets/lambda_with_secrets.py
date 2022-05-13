@@ -8,9 +8,10 @@ from botocore.exceptions import ClientError
 
 def get_secret():
     """
-    Gets the secret to access the database.
+    Gets the secret
     """
-    secret_arn = os.getenv("secret_arn")
+    # Get env vars we passed in the stack.
+    secret_name = os.getenv("secret_name")
     region_name = os.getenv("secret_region")
 
     # Create a Secrets Manager client
@@ -24,7 +25,10 @@ def get_secret():
     # We rethrow the exception by default.
 
     try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_arn)
+        # We need only the name of the secret
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
     except ClientError as e:
         if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -53,15 +57,16 @@ def get_secret():
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if "SecretString" in get_secret_value_response:
             secret = get_secret_value_response["SecretString"]
-            return json.loads(secret)
+            # If you have multiple secret values, you will need to json.loads(secret) here and then access the values using dict keys
+            return secret
         else:
             decoded_binary_secret = base64.b64decode(
                 get_secret_value_response["SecretBinary"]
             )
-            return json.loads(decoded_binary_secret)
+            return decoded_binary_secret
 
 
 def handler(event, context):
     secret = get_secret()
-    print(secret)
-    return True
+    # Don't do this in production!!!
+    return secret

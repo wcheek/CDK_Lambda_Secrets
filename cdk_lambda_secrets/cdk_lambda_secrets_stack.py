@@ -13,9 +13,7 @@ class CdkLambdaSecretsStack(Stack):
         self.build_lambda_func()
 
     def build_lambda_func(self):
-        example_secret = secrets.Secret.from_secret_name_v2(
-            scope=self, id="secretExample", secret_name="secretsExample"
-        )
+        secret_name = "secretsExample"
         self.secrets_lambda = _lambda.Function(
             scope=self,
             id="LambdaWithSecrets",
@@ -25,10 +23,14 @@ class CdkLambdaSecretsStack(Stack):
                 path="lambda_funcs/lambda_with_secrets"
             ),
             handler="lambda_with_secrets.handler",
-            # environment={
-            #     "secret_arn": example_secret.secret_full_arn,
-            #     "secret_region": os.environ["CDK_DEFAULT_REGION"],
-            # },
+            # We need these env vars to access the secret inside the lambda
+            environment={
+                "secret_name": secret_name,
+                "secret_region": os.environ["CDK_DEFAULT_REGION"],
+            },
         )
-
+        # Grant permission to the Lambda func access the secret
+        example_secret = secrets.Secret.from_secret_name_v2(
+            scope=self, id="secretExample", secret_name=secret_name
+        )
         example_secret.grant_read(grantee=self.secrets_lambda)
