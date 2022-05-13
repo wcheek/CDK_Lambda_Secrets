@@ -5,7 +5,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-class 6CdkLambdaSecretsStack(Stack):
+class CdkLambdaSecretsStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -14,6 +14,6 @@ class 6CdkLambdaSecretsStack(Stack):
 
         # example resource
         # queue = sqs.Queue(
-        #     self, "6CdkLambdaSecretsQueue",
+        #     self, "CdkLambdaSecretsQueue",
         #     visibility_timeout=Duration.seconds(300),
         # )

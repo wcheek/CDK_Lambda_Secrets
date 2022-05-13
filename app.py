@@ -3,11 +3,11 @@ import os
 
 import aws_cdk as cdk
 
-from 6_cdk_lambda_secrets.6_cdk_lambda_secrets_stack import 6CdkLambdaSecretsStack
+from cdk_lambda_secrets.cdk_lambda_secrets_stack import CdkLambdaSecretsStack
 
 
 app = cdk.App()
-6CdkLambdaSecretsStack(app, "6CdkLambdaSecretsStack",
+CdkLambdaSecretsStack(app, "6CdkLambdaSecretsStack",
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
     # but a single synthesized template can be deployed anywhere.
